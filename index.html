@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buildathon Theme Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            color: #1a1a1a;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-size: 52px;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .subtitle {
+            font-size: 24px;
+            opacity: 0.95;
+            font-weight: 400;
+        }
+
+        .generate-section {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .btn-generate {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 1.5rem 3rem;
+            font-size: 22px;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+        }
+
+        .btn-generate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+        }
+
+        .btn-generate:active {
+            transform: translateY(0);
+        }
+
+        .theme-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-bottom: 3rem;
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .theme-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 4px solid transparent;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .theme-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        }
+
+        .theme-card.selected {
+            border-color: #667eea;
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+        }
+
+        .theme-card.dimmed {
+            opacity: 0.45;
+        }
+
+        .theme-emoji {
+            font-size: 64px;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .theme-card-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: #1a1a1a;
+        }
+
+        .theme-card-concept {
+            font-size: 18px;
+            color: #4a4a4a;
+            margin-bottom: 1.5rem;
+            font-style: italic;
+        }
+
+        .theme-card-constraints {
+            list-style: none;
+            margin-bottom: 1.5rem;
+        }
+
+        .theme-card-constraints li {
+            font-size: 16px;
+            color: #2a2a2a;
+            padding: 0.4rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .theme-card-constraints li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .theme-card-example {
+            font-size: 15px;
+            color: #666;
+            font-style: italic;
+            margin-bottom: 1.5rem;
+            padding: 0.75rem;
+            background: #f5f5f5;
+            border-radius: 8px;
+        }
+
+        .theme-card-judging {
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: #e8f5e9;
+            border-radius: 8px;
+            border-left: 3px solid #4caf50;
+        }
+
+        .judging-header {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .theme-card-judging .judging-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .theme-card-judging .judging-list li {
+            font-size: 15px;
+            color: #2a2a2a;
+            padding: 0.3rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            line-height: 1.4;
+        }
+
+        .theme-card-judging .judging-list li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #4caf50;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .btn-choose {
+            width: 100%;
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 1rem;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: auto;
+        }
+
+        .btn-choose:hover {
+            background: #5568d3;
+        }
+
+        .theme-card.selected .btn-choose {
+            background: #48bb78;
+        }
+
+        .theme-card.selected .btn-choose::after {
+            content: " ✓";
+        }
+
+        .theme-details {
+            background: white;
+            border-radius: 16px;
+            padding: 3rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-bottom: 3rem;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .theme-details-header {
+            margin-bottom: 2rem;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 1.5rem;
+        }
+
+        .theme-details-title {
+            font-size: 42px;
+            font-weight: 800;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+        }
+
+        .theme-details-title::before {
+            content: attr(data-emoji);
+            margin-right: 0.5rem;
+        }
+
+        .theme-details-concept {
+            font-size: 24px;
+            color: #4a4a4a;
+            font-style: italic;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 20px;
+            font-weight: 600;
+            color: #666;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+            top: 2px;
+        }
+
+        .tab-btn:hover {
+            color: #667eea;
+        }
+
+        .tab-btn.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .judging-criteria {
+            list-style: none;
+            counter-reset: criteria;
+        }
+
+        .judging-criteria li {
+            font-size: 22px;
+            color: #1a1a1a;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 5px solid #667eea;
+            counter-increment: criteria;
+            position: relative;
+            padding-left: 3.5rem;
+        }
+
+        .judging-criteria li::before {
+            content: counter(criteria) ".";
+            position: absolute;
+            left: 1.25rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .tie-breaker {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-top: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+        }
+
+        .tie-breaker-label {
+            font-size: 18px;
+            font-weight: 600;
+            color: #664d00;
+            margin-bottom: 0.5rem;
+        }
+
+        .tie-breaker-value {
+            font-size: 26px;
+            font-weight: 800;
+            color: #1a1a1a;
+        }
+
+        .example-list {
+            list-style: none;
+        }
+
+        .example-list li {
+            font-size: 18px;
+            color: #2a2a2a;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding-left: 3rem;
+            position: relative;
+        }
+
+        .example-list li::before {
+            content: "💡";
+            position: absolute;
+            left: 1rem;
+            font-size: 20px;
+        }
+
+        .constraint-list {
+            list-style: none;
+        }
+
+        .constraint-list li {
+            font-size: 18px;
+            color: #2a2a2a;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            background: #fff3cd;
+            border-radius: 8px;
+            padding-left: 3rem;
+            position: relative;
+            border-left: 4px solid #ffc107;
+        }
+
+        .constraint-list li::before {
+            content: "⚠️";
+            position: absolute;
+            left: 1rem;
+        }
+
+        .schedule-timeline {
+            font-size: 18px;
+            line-height: 1.8;
+            color: #2a2a2a;
+            white-space: pre-line;
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+        }
+
+        .rules-list {
+            list-style: none;
+        }
+
+        .rules-list li {
+            font-size: 18px;
+            color: #2a2a2a;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding-left: 3rem;
+            position: relative;
+        }
+
+        .rules-list li::before {
+            content: "✓";
+            position: absolute;
+            left: 1rem;
+            color: #48bb78;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .btn-reset {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 1.25rem 2.5rem;
+            font-size: 20px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            display: block;
+            margin: 2rem auto 0;
+            transition: all 0.3s ease;
+        }
+
+        .btn-reset:hover {
+            background: #5568d3;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 1024px) {
+            .theme-cards {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 40px;
+            }
+
+            .subtitle {
+                font-size: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 32px;
+            }
+
+            .theme-card-title {
+                font-size: 24px;
+            }
+
+            .theme-details {
+                padding: 1.5rem;
+            }
+
+            .theme-details-title {
+                font-size: 32px;
+            }
+
+            .tabs {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .tab-btn {
+                font-size: 16px;
+                padding: 0.75rem 1rem;
+                white-space: nowrap;
+            }
+        }
+
+        .qr-container {
+            margin-top: 1.5rem;
+            text-align: center;
+        }
+
+        .qr-code-box {
+            display: inline-block;
+            background: white;
+            padding: 1rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            margin-top: 0.75rem;
+        }
+
+        .qr-label {
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            .qr-code-box {
+                padding: 0.75rem;
+            }
+        }
+    </style>
+    <!-- QR Code Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 BUILDATHON THEME GENERATOR</h1>
+            <p class="subtitle">Present to choose your challenge</p>
+
+            <!-- QR Code Section -->
+            <div class="qr-container">
+                <p class="qr-label">Scan to view on your phone</p>
+                <div class="qr-code-box">
+                    <canvas id="qrcode"></canvas>
+                </div>
+            </div>
+        </header>
+
+        <div class="generate-section">
+            <button class="btn-generate" id="generateBtn">Generate Theme Options</button>
+        </div>
+
+        <div id="themeCardsContainer" class="hidden"></div>
+
+        <div id="themeDetailsContainer" class="hidden"></div>
+    </div>
+
+    <script>
+        // Theme Data
+        const themes = [
+            {
+                id: "micro-helper",
+                name: "The Micro-Helper",
+                emoji: "🔧",
+                concept: "Build something small but mighty",
+                cardConstraints: ["Single feature", "1 hour build", "Fully functional"],
+                cardExample: "Regex tester with live validation",
+                description: "Create a focused tool that does one thing exceptionally well. No feature bloat, no complexity—just a simple, elegant solution to a real problem.",
+                constraints: [
+                    "Must have only ONE core feature",
+                    "Must be fully functional in under 1 hour of use",
+                    "No authentication or user accounts",
+                    "Must load in under 2 seconds"
+                ],
+                exampleProjects: [
+                    "Regex tester with live validation and examples",
+                    "Color palette generator from images",
+                    "Markdown to HTML preview tool",
+                    "Unit converter with common conversions",
+                    "Meeting cost calculator (attendees × hourly rate × time)"
+                ],
+                judgingCriteria: [
+                    "Does it work without errors?",
+                    "Is the core feature complete and polished?",
+                    "Can you demo it in under 60 seconds?",
+                    "Is the UI intuitive without instructions?",
+                    "Would you actually use this tool?"
+                ]
+            },
+            {
+                id: "no-javascript",
+                name: "The No-JavaScript Challenge",
+                emoji: "🎨",
+                concept: "Pure HTML & CSS magic",
+                cardConstraints: ["No JavaScript", "Modern CSS only", "Interactive"],
+                cardExample: "CSS-only accordion menu",
+                description: "Prove that you don't need JavaScript for everything. Build something interactive and beautiful using only HTML and modern CSS features like Grid, Flexbox, animations, and pseudo-selectors.",
+                constraints: [
+                    "Absolutely ZERO JavaScript (vanilla or libraries)",
+                    "Must use modern CSS features (Grid, Flexbox, custom properties, etc.)",
+                    "Must have some form of interactivity (hover, focus, checkbox hacks, etc.)",
+                    "Semantic HTML required"
+                ],
+                exampleProjects: [
+                    "CSS-only accordion with smooth animations",
+                    "Pure CSS image gallery with lightbox effect",
+                    "Pricing table with interactive comparison slider",
+                    "CSS-only tabs with content switching",
+                    "Animated loading indicators and progress bars"
+                ],
+                judgingCriteria: [
+                    "Is there absolutely zero JavaScript?",
+                    "Does it have meaningful interactivity?",
+                    "Is the CSS well-organized and modern?",
+                    "Does it work across modern browsers?",
+                    "Is the design visually appealing?"
+                ]
+            },
+            {
+                id: "cli-champion",
+                name: "The CLI Champion",
+                emoji: "💻",
+                concept: "Terminal-only interface",
+                cardConstraints: ["Command-line only", "No GUI", "Text-based"],
+                cardExample: "Terminal-based task manager",
+                description: "Build a command-line tool that solves a real problem. No browsers, no graphics—just pure terminal interaction with stdin/stdout or a CLI framework.",
+                constraints: [
+                    "Must run entirely in the terminal",
+                    "No GUI or browser interface allowed",
+                    "Must accept command-line arguments or interactive prompts",
+                    "Should have helpful --help documentation"
+                ],
+                exampleProjects: [
+                    "Git commit message generator with templates",
+                    "File organizer that sorts by type/date",
+                    "Terminal-based pomodoro timer with notifications",
+                    "Changelog generator from git history",
+                    "Code snippet manager for quick access"
+                ],
+                judgingCriteria: [
+                    "Does it run without a GUI?",
+                    "Is the terminal output clear and readable?",
+                    "Does it handle errors gracefully?",
+                    "Is the --help documentation useful?",
+                    "Would developers actually use this?"
+                ]
+            },
+            {
+                id: "mobile-first",
+                name: "The Mobile-First Mandate",
+                emoji: "📱",
+                concept: "Phone-optimized from the start",
+                cardConstraints: ["Mobile-first design", "Touch-friendly", "375px+ width"],
+                cardExample: "Swipeable recipe cards",
+                description: "Design for mobile screens first, then enhance for larger displays. Think thumb-friendly interactions, large touch targets, and content that works on small screens.",
+                constraints: [
+                    "Must look perfect on 375px width screens (iPhone SE)",
+                    "Touch targets must be at least 44x44px",
+                    "No hover-dependent interactions",
+                    "Must be usable with one hand"
+                ],
+                exampleProjects: [
+                    "Swipeable recipe card interface",
+                    "Mobile-optimized expense tracker",
+                    "Touch-friendly drawing or doodle app",
+                    "Thumb-zone navigation menu demo",
+                    "Mobile reading mode with large text controls"
+                ],
+                judgingCriteria: [
+                    "Does it work perfectly on mobile first?",
+                    "Are all interactive elements touch-friendly?",
+                    "Can you use it with one hand?",
+                    "Is the content readable on small screens?",
+                    "Does it enhance gracefully for larger screens?"
+                ]
+            },
+            {
+                id: "productivity-booster",
+                name: "The Productivity Booster",
+                emoji: "⚡",
+                concept: "Save time, boost efficiency",
+                cardConstraints: ["Saves time", "Solves real problem", "Quick to use"],
+                cardExample: "Email template expander",
+                description: "Build a tool that genuinely saves people time or eliminates frustration. Focus on automating tedious tasks or streamlining common workflows.",
+                constraints: [
+                    "Must solve a real productivity pain point",
+                    "Should save at least 5 minutes per use",
+                    "Must be faster than doing it manually",
+                    "Should feel snappy and responsive"
+                ],
+                exampleProjects: [
+                    "Email template expander with placeholders",
+                    "Meeting scheduler that finds optimal times",
+                    "Bulk file renamer with preview",
+                    "Keyboard shortcut cheat sheet generator",
+                    "Focus timer with website blocker"
+                ],
+                judgingCriteria: [
+                    "Does it solve a real productivity problem?",
+                    "Would it actually save time over manual work?",
+                    "Is it fast and responsive to use?",
+                    "Is the workflow intuitive?",
+                    "Would you use it daily?"
+                ]
+            },
+            {
+                id: "accessibility-hero",
+                name: "The Accessibility Hero",
+                emoji: "♿",
+                concept: "Inclusive design for everyone",
+                cardConstraints: ["WCAG compliant", "Screen reader ready", "Keyboard nav"],
+                cardExample: "Accessible form with validation",
+                description: "Build something that works beautifully for everyone, including people with disabilities. Focus on semantic HTML, keyboard navigation, screen reader support, and high contrast.",
+                constraints: [
+                    "Must pass WCAG 2.1 AA standards minimum",
+                    "Full keyboard navigation support required",
+                    "Must work with screen readers",
+                    "Color contrast ratios must meet 7:1 (AAA) for body text"
+                ],
+                exampleProjects: [
+                    "Accessible form with clear error messages and ARIA labels",
+                    "Keyboard-navigable modal dialog done right",
+                    "High-contrast image gallery with alt text",
+                    "Screen reader-friendly data table with sorting",
+                    "Accessible audio player with full keyboard controls"
+                ],
+                judgingCriteria: [
+                    "Can you navigate everything with keyboard only?",
+                    "Does it work with a screen reader?",
+                    "Do colors meet contrast requirements?",
+                    "Is the HTML semantic and properly labeled?",
+                    "Would people with disabilities prefer this?"
+                ]
+            },
+            {
+                id: "developer-tool",
+                name: "The Developer Tool",
+                emoji: "🛠️",
+                concept: "Make coding easier",
+                cardConstraints: ["For developers", "Saves dev time", "Solves coding pain"],
+                cardExample: "JSON formatter with syntax highlighting",
+                description: "Build a tool that makes developers' lives easier. Think debugging helpers, code generators, formatters, or anything that streamlines the development process.",
+                constraints: [
+                    "Must be useful for software developers",
+                    "Should solve a common coding frustration",
+                    "Must handle edge cases gracefully",
+                    "Code output should be copy-paste ready"
+                ],
+                exampleProjects: [
+                    "JSON/XML formatter with syntax highlighting",
+                    "Git command builder with explanations",
+                    "Environment variable manager with validation",
+                    "HTTP request builder and tester",
+                    "SQL query formatter and validator"
+                ],
+                judgingCriteria: [
+                    "Does it solve a real developer problem?",
+                    "Is the output accurate and useful?",
+                    "Does it handle errors well?",
+                    "Would you add it to your bookmarks?",
+                    "Is it better than existing alternatives?"
+                ]
+            },
+            {
+                id: "data-visualizer",
+                name: "The Data Visualizer",
+                emoji: "📊",
+                concept: "Make data beautiful and clear",
+                cardConstraints: ["Visual representation", "Data-driven", "Interactive"],
+                cardExample: "CSV to chart converter",
+                description: "Turn raw data into insights through visualization. Build something that helps people understand numbers, patterns, or relationships through charts, graphs, or creative visual representations.",
+                constraints: [
+                    "Must accept data input (CSV, JSON, or manual entry)",
+                    "Must generate visual output (charts, graphs, etc.)",
+                    "Should be interactive (hover, filter, zoom, etc.)",
+                    "Visualization should reveal insights"
+                ],
+                exampleProjects: [
+                    "CSV to interactive chart converter",
+                    "GitHub contribution heatmap generator",
+                    "Personal finance pie chart maker",
+                    "Word frequency visualizer from text",
+                    "Timeline generator from dates"
+                ],
+                judgingCriteria: [
+                    "Does it accept and parse data correctly?",
+                    "Is the visualization clear and readable?",
+                    "Does interactivity add value?",
+                    "Would this help someone understand data?",
+                    "Is it visually appealing?"
+                ]
+            },
+            {
+                id: "api-mashup",
+                name: "The API Mashup",
+                emoji: "🔗",
+                concept: "Combine two or more APIs",
+                cardConstraints: ["2+ APIs required", "Combined functionality", "Public APIs"],
+                cardExample: "Weather + playlist generator",
+                description: "Combine multiple public APIs to create something new and interesting. The magic happens when you connect different data sources in creative ways.",
+                constraints: [
+                    "Must use at least 2 different public APIs",
+                    "APIs must interact meaningfully (not just side-by-side)",
+                    "Must handle API errors gracefully",
+                    "Should work with free API tiers"
+                ],
+                exampleProjects: [
+                    "Weather-based playlist generator (Weather API + Spotify)",
+                    "Movie recommendations based on current news (News API + TMDB)",
+                    "Restaurant finder with real-time weather (Google Places + Weather)",
+                    "GitHub user stats with location map (GitHub API + Map API)",
+                    "Currency converter with historical charts (Exchange Rate + Chart API)"
+                ],
+                judgingCriteria: [
+                    "Does it meaningfully combine 2+ APIs?",
+                    "Is the combination creative and useful?",
+                    "Does it handle API failures well?",
+                    "Is the data integration smooth?",
+                    "Would the mashup be useful to others?"
+                ]
+            },
+            {
+                id: "local-first",
+                name: "The Local-First App",
+                emoji: "💾",
+                concept: "No backend allowed",
+                cardConstraints: ["Client-side only", "No server", "LocalStorage/IndexedDB"],
+                cardExample: "Offline note-taking app",
+                description: "Build an app that works entirely in the browser with no backend. All data must be stored locally using localStorage, IndexedDB, or similar client-side storage.",
+                constraints: [
+                    "No backend server or database allowed",
+                    "Must use localStorage or IndexedDB for persistence",
+                    "Must work completely offline after first load",
+                    "Data should persist across browser sessions"
+                ],
+                exampleProjects: [
+                    "Offline note-taking app with search",
+                    "Local-first todo list with categories",
+                    "Browser-based bookmark manager",
+                    "Encrypted password generator and vault",
+                    "Personal journal with daily entries"
+                ],
+                judgingCriteria: [
+                    "Does it work without a backend?",
+                    "Is data persisted across sessions?",
+                    "Does it work offline?",
+                    "Is the data management reliable?",
+                    "Would you trust it with your data?"
+                ]
+            },
+            {
+                id: "real-time",
+                name: "The Real-Time Experience",
+                emoji: "🔴",
+                concept: "Live updates and instant feedback",
+                cardConstraints: ["Real-time updates", "Instant feedback", "Live data"],
+                cardExample: "Collaborative drawing board",
+                description: "Build something that updates in real-time. Think live previews, collaborative features, or anything that feels instant and responsive to changes.",
+                constraints: [
+                    "Must update in real-time (under 100ms latency feel)",
+                    "Changes should be visible immediately",
+                    "Can use WebSockets, polling, or local real-time",
+                    "Must feel snappy and responsive"
+                ],
+                exampleProjects: [
+                    "Collaborative drawing board (multiple cursors)",
+                    "Live markdown editor with split preview",
+                    "Real-time poll results visualization",
+                    "Shared countdown timer with sync",
+                    "Live code editor with instant preview"
+                ],
+                judgingCriteria: [
+                    "Does it update in real-time?",
+                    "Is the latency imperceptible?",
+                    "Does it feel smooth and responsive?",
+                    "Are updates handled gracefully?",
+                    "Would you want to use it over static alternatives?"
+                ]
+            },
+            {
+                id: "game-jam",
+                name: "The Game Jam Mini",
+                emoji: "🎮",
+                concept: "Playable game in browser",
+                cardConstraints: ["Playable game", "Clear rules", "Win/lose state"],
+                cardExample: "Typing speed arcade game",
+                description: "Build a simple but complete game that runs in the browser. Focus on core mechanics, clear rules, and a satisfying game loop. Keep the scope tiny but polished.",
+                constraints: [
+                    "Must be playable in the browser",
+                    "Must have clear win/lose conditions",
+                    "Should have a scoring or progress system",
+                    "Controls must be intuitive (keyboard or mouse)"
+                ],
+                exampleProjects: [
+                    "Typing speed arcade game with difficulty levels",
+                    "Reaction time test with leaderboard",
+                    "Memory card matching game",
+                    "Simple physics-based puzzle",
+                    "Word guessing game with hints"
+                ],
+                judgingCriteria: [
+                    "Is it actually playable and fun?",
+                    "Are the rules clear without explanation?",
+                    "Is there a clear win/lose state?",
+                    "Would you play it more than once?",
+                    "Is the game loop satisfying?"
+                ]
+            }
+        ];
+
+        // Supporting Data
+        const standardSchedule = `0:00 - Theme Reveal & Team Formation
+0:15 - Planning & Setup
+0:30 - Building Sprint 1
+1:00 - Mid-point Check-in
+1:15 - Building Sprint 2
+1:45 - Final Polish & Deploy
+2:00 - Demo Presentations (2 min each)
+2:30 - Judging & Winner Announcement`;
+
+        const standardRules = [
+            "No pre-built projects - start from scratch",
+            "AI tools are encouraged (Copilot, ChatGPT, etc.)",
+            "Open source libraries and frameworks allowed",
+            "No authentication or user accounts required",
+            "No databases required (use localStorage or mock data)",
+            "Must be demoable in a web browser",
+            "Code must be on GitHub (public repo)",
+            "Work solo or in teams (max 3 people)"
+        ];
+
+        const tieBreakerPool = [
+            "Fastest demo completion time",
+            "Loudest audience applause",
+            "Rock-paper-scissors tournament",
+            "Most creative project name",
+            "Judge's favorite implementation detail",
+            "Most commits during the buildathon",
+            "Cleanest code organization"
+        ];
+
+        // State Management
+        let currentThemes = [];
+        let selectedTheme = null;
+        let lastSelectedIds = [];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('generateBtn').addEventListener('click', generateThemes);
+            generateQRCode();
+        });
+
+        // QR Code Generation
+        function generateQRCode() {
+            const url = window.location.href;
+
+            // Create QR code instance
+            const qr = qrcode(0, 'H'); // Type 0 (auto), Error correction level H (high)
+            qr.addData(url);
+            qr.make();
+
+            // Render to canvas
+            const canvas = document.getElementById('qrcode');
+            const cellSize = 4; // Size of each QR code cell
+            const margin = 4;   // Margin around QR code
+
+            canvas.width = canvas.height = qr.getModuleCount() * cellSize + margin * 2;
+            const ctx = canvas.getContext('2d');
+
+            // White background
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw QR code
+            ctx.fillStyle = '#000000';
+            for (let row = 0; row < qr.getModuleCount(); row++) {
+                for (let col = 0; col < qr.getModuleCount(); col++) {
+                    if (qr.isDark(row, col)) {
+                        ctx.fillRect(
+                            col * cellSize + margin,
+                            row * cellSize + margin,
+                            cellSize,
+                            cellSize
+                        );
+                    }
+                }
+            }
+        }
+
+        // Generate 3 Random Themes
+        function generateThemes() {
+            // Filter out recently selected themes
+            const availableThemes = themes.filter(t => !lastSelectedIds.includes(t.id));
+
+            // If we've cycled through too many, reset
+            if (availableThemes.length < 3) {
+                lastSelectedIds = [];
+            }
+
+            // Shuffle and take 3
+            const shuffled = [...(availableThemes.length >= 3 ? availableThemes : themes)]
+                .sort(() => Math.random() - 0.5);
+            currentThemes = shuffled.slice(0, 3);
+
+            renderThemeCards();
+
+            // Hide details if showing
+            document.getElementById('themeDetailsContainer').classList.add('hidden');
+            selectedTheme = null;
+        }
+
+        // Render Theme Cards
+        function renderThemeCards() {
+            const container = document.getElementById('themeCardsContainer');
+            container.classList.remove('hidden');
+
+            container.innerHTML = `
+                <div class="theme-cards">
+                    ${currentThemes.map(theme => `
+                        <div class="theme-card" data-theme-id="${theme.id}">
+                            <span class="theme-emoji">${theme.emoji}</span>
+                            <h3 class="theme-card-title">${theme.name}</h3>
+                            <p class="theme-card-concept">${theme.concept}</p>
+                            <ul class="theme-card-constraints">
+                                ${theme.cardConstraints.map(c => `<li>${c}</li>`).join('')}
+                            </ul>
+                            <div class="theme-card-example">Example: ${theme.cardExample}</div>
+                            <div class="theme-card-judging">
+                                <div class="judging-header">Judging Criteria:</div>
+                                <ul class="judging-list">
+                                    ${theme.judgingCriteria.map(c => `<li>${c}</li>`).join('')}
+                                </ul>
+                            </div>
+                            <button class="btn-choose" onclick="selectTheme('${theme.id}')">
+                                Choose This Theme
+                            </button>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // Select Theme
+        function selectTheme(themeId) {
+            selectedTheme = themes.find(t => t.id === themeId);
+            lastSelectedIds = [themeId, ...lastSelectedIds].slice(0, 3);
+
+            // Add random tie-breaker
+            const tieBreaker = tieBreakerPool[Math.floor(Math.random() * tieBreakerPool.length)];
+
+            // Update card states
+            document.querySelectorAll('.theme-card').forEach(card => {
+                if (card.dataset.themeId === themeId) {
+                    card.classList.add('selected');
+                    card.classList.remove('dimmed');
+                } else {
+                    card.classList.add('dimmed');
+                    card.classList.remove('selected');
+                }
+            });
+
+            // Render details
+            renderThemeDetails(selectedTheme, tieBreaker);
+        }
+
+        // Render Theme Details
+        function renderThemeDetails(theme, tieBreaker) {
+            const container = document.getElementById('themeDetailsContainer');
+            container.classList.remove('hidden');
+
+            container.innerHTML = `
+                <div class="theme-details">
+                    <div class="theme-details-header">
+                        <h2 class="theme-details-title" data-emoji="${theme.emoji}">${theme.name}</h2>
+                        <p class="theme-details-concept">${theme.concept}</p>
+                    </div>
+
+                    <div class="tabs">
+                        <button class="tab-btn" onclick="switchTab('overview')">Overview</button>
+                        <button class="tab-btn" onclick="switchTab('examples')">Examples</button>
+                        <button class="tab-btn active" onclick="switchTab('judging')">Judging</button>
+                        <button class="tab-btn" onclick="switchTab('details')">Details</button>
+                    </div>
+
+                    <div id="overview-tab" class="tab-content">
+                        <p style="font-size: 20px; margin-bottom: 2rem; line-height: 1.6; color: #2a2a2a;">
+                            ${theme.description}
+                        </p>
+                        <h3 style="font-size: 24px; margin-bottom: 1rem; color: #1a1a1a;">Constraints</h3>
+                        <ul class="constraint-list">
+                            ${theme.constraints.map(c => `<li>${c}</li>`).join('')}
+                        </ul>
+                    </div>
+
+                    <div id="examples-tab" class="tab-content">
+                        <h3 style="font-size: 24px; margin-bottom: 1rem; color: #1a1a1a;">Example Projects</h3>
+                        <ul class="example-list">
+                            ${theme.exampleProjects.map(p => `<li>${p}</li>`).join('')}
+                        </ul>
+                    </div>
+
+                    <div id="judging-tab" class="tab-content active">
+                        <h3 style="font-size: 24px; margin-bottom: 1rem; color: #1a1a1a;">Judging Criteria</h3>
+                        <ul class="judging-criteria">
+                            ${theme.judgingCriteria.map(c => `<li>${c}</li>`).join('')}
+                        </ul>
+                        <div class="tie-breaker">
+                            <div class="tie-breaker-label">🎲 TIE-BREAKER</div>
+                            <div class="tie-breaker-value">${tieBreaker}</div>
+                        </div>
+                    </div>
+
+                    <div id="details-tab" class="tab-content">
+                        <h3 style="font-size: 24px; margin-bottom: 1rem; color: #1a1a1a;">Schedule</h3>
+                        <div class="schedule-timeline">${standardSchedule}</div>
+
+                        <h3 style="font-size: 24px; margin: 2rem 0 1rem; color: #1a1a1a;">Rules</h3>
+                        <ul class="rules-list">
+                            ${standardRules.map(r => `<li>${r}</li>`).join('')}
+                        </ul>
+                    </div>
+
+                    <button class="btn-reset" onclick="resetGenerator()">Generate New Options</button>
+                </div>
+            `;
+
+            // Scroll to details
+            container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // Switch Tabs
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+
+            // Update button states
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        // Reset Generator
+        function resetGenerator() {
+            generateThemes();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

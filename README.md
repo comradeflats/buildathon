@@ -1,2 +1,0 @@
-# buildathon
-buildathon generator
