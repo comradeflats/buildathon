@@ -1,0 +1,50 @@
+{
+  "eventName": "March Buildathon 2026",
+  "teams": [
+    {
+      "id": "team-1",
+      "name": "Code Crusaders",
+      "projectName": "TaskFlow AI",
+      "description": "AI-powered task management that learns your workflow patterns and automatically prioritizes your daily tasks.",
+      "members": ["Alice Chen", "Bob Martinez"],
+      "techStack": ["React", "Node.js", "OpenAI"],
+      "themeId": "productivity-booster"
+    },
+    {
+      "id": "team-2",
+      "name": "ByteBuilders",
+      "projectName": "EcoTrack",
+      "description": "A carbon footprint tracker that gamifies sustainable living with challenges and community leaderboards.",
+      "members": ["Carol Kim", "David Okonkwo", "Eve Patel"],
+      "techStack": ["Next.js", "PostgreSQL", "Charts.js"],
+      "themeId": "data-visualizer"
+    },
+    {
+      "id": "team-3",
+      "name": "Neural Ninjas",
+      "projectName": "MedAssist",
+      "description": "Voice-controlled medical assistant for elderly patients to manage medications and appointments.",
+      "members": ["Frank Lee", "Grace Wu"],
+      "techStack": ["Python", "TensorFlow", "React Native"],
+      "themeId": "accessibility-hero"
+    },
+    {
+      "id": "team-4",
+      "name": "Data Dragons",
+      "projectName": "FarmSense",
+      "description": "IoT-powered smart farming solution with real-time soil monitoring and automated irrigation.",
+      "members": ["Henry Zhang", "Ivy Brooks", "Jack Wilson"],
+      "techStack": ["Raspberry Pi", "MQTT", "Vue.js"],
+      "themeId": "real-time"
+    },
+    {
+      "id": "team-5",
+      "name": "Cloud Chasers",
+      "projectName": "StudyBuddy",
+      "description": "Collaborative learning platform with AI-generated flashcards and spaced repetition algorithms.",
+      "members": ["Karen Davis", "Leo Hernandez"],
+      "techStack": ["Svelte", "Supabase", "GPT-4"],
+      "themeId": "local-first"
+    }
+  ]
+}
